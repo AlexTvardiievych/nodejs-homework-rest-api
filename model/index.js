@@ -35,8 +35,6 @@ const removeContact = async (contactId) => {
 }
 
 const addContact = async (newContactArgs) => {
-  if (newContactArgs.name === undefined || newContactArgs.email === undefined || newContactArgs.phone === undefined)
-    return undefined;
 
   const contacts = await listContacts();
   const id = Number(generateUniqueId({ length: 5, useLetters: false }));
