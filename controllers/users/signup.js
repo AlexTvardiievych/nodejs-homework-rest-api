@@ -2,6 +2,8 @@ const { User } = require('../../models');
 const { Conflict } = require('http-errors');
 const bccrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+const nanoid = require('nanoid');
+const { sendEmail } = require('../../helpers');
 
 const signup = async (req, res, next) => {
     try {
@@ -14,7 +16,16 @@ const signup = async (req, res, next) => {
 
         const avatarURL = gravatar.url(email);
         const hashPassword = bccrypt.hashSync(password, bccrypt.genSaltSync(10));
-        const result = await User.create({ email, password: hashPassword, subscription, avatarURL });
+        const verificationToken = nanoid();
+        const result = await User.create({ email, password: hashPassword, subscription, avatarURL, verificationToken });
+
+        const mail = {
+            to: email,
+            subject: "Verification email",
+            html: `<a target="_blank" href="http://localhost:3000/api/users/verify/${verificationToken}"> Verify email </a>`
+        }
+
+        await sendEmail(mail);
 
         res.status(201).json({
             status: 'Created',
