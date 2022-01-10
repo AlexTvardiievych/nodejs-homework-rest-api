@@ -8,10 +8,15 @@ const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
+        if (!user) {
+            throw new Unauthorized("Email is wrong");
+        }
+
         const passCompare = bccrypt.compareSync(password, user.password);
 
-        if (!user || !passCompare) {
-            throw new Unauthorized("Email or password are wrong");
+        if (!passCompare) {
+            throw new Unauthorized("Password is wrong");
         }
 
         const payload = {

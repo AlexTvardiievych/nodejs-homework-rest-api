@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { NotFound } = require('http-errors');
 const { Contact } = require('../../models');
 
@@ -6,7 +7,11 @@ const updFavorite = async (req, res, next) => {
         const { contactId } = req.params;
         const { favorite } = req.body;
 
-        const updatedContacts = await Contact.findByIdAndUpdate(contactId, { favorite }, { new: true });
+        if (!mongoose.isValidObjectId(contactId)) {
+            throwError(contactId);
+        }
+
+        const updatedContacts = await Contact.findOneAndUpdate({ _id: contactId, owner: contactId }, { favorite }, { new: true });
 
         if (!updatedContacts) {
             throw new NotFound(`Contact with id ${contactId} not found`);
