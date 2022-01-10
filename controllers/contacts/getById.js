@@ -1,9 +1,15 @@
+const mongoose = require('mongoose');
 const { NotFound } = require('http-errors');
 const { Contact } = require('../../models')
 
 const getById = async (req, res, next) => {
     try {
         const { contactId } = req.params;
+
+        if (!mongoose.isValidObjectId(contactId)) {
+            throwError(contactId);
+        }
+
         const contacts = await Contact.findById(contactId);
 
         if (!contacts) {
