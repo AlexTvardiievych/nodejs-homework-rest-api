@@ -1,25 +1,26 @@
 const mongoose = require('mongoose');
 const { NotFound } = require('http-errors');
-const { Contact } = require('../../models')
+const { Contact } = require('../../models');
 
-const getById = async (req, res, next) => {
+const updFavorite = async (req, res, next) => {
     try {
         const { contactId } = req.params;
+        const { favorite } = req.body;
 
         if (!mongoose.isValidObjectId(contactId)) {
             throwError(contactId);
         }
 
-        const contacts = await Contact.findById(contactId);
+        const updatedContacts = await Contact.findByIdAndUpdate(contactId, { favorite }, { new: true });
 
-        if (!contacts) {
+        if (!updatedContacts) {
             throw new NotFound(`Contact with id ${contactId} not found`);
         }
 
         res.json({
             status: "sucess",
             code: 200,
-            data: { contacts }
+            data: { updatedContacts }
         });
     }
     catch (error) {
@@ -27,4 +28,4 @@ const getById = async (req, res, next) => {
     }
 }
 
-module.exports = getById;
+module.exports = updFavorite;
