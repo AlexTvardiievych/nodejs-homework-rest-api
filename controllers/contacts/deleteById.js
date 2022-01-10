@@ -6,8 +6,6 @@ const deleteById = async (req, res, next) => {
     try {
         const { contactId } = req.params;
 
-        console.log("HERE");
-
         if (!mongoose.isValidObjectId(contactId)) {
             throwError(contactId);
         }
