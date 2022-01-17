@@ -12,4 +12,4 @@ router.get("/current", login, ctrl.getCurrent);
 
 router.post("/logout", login, ctrl.logout);
 
-module.exports = router
+module.exports = router;
